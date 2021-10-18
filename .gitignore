@@ -1,0 +1,19 @@
+# compiled output
+node_modules
+
+# hardhat files
+cache
+artifacts
+typechain
+
+# IDEs
+/.idea
+
+# openzeppelin
+.openzeppelin
+
+# env
+.env*
+
+# notes
+.note*
