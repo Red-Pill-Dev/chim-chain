@@ -33,7 +33,7 @@ contract ChimUpgradeableV1 is ERC20PausableUpgradeable, OwnableUpgradeable, Reen
      * Requirements:
      * - `maxTotalSupply` cannot be 0.
      */
-    function initialize(uint256 maxTotalSupply_) initializer public {
+    function initialize(uint256 maxTotalSupply_) initializer external {
         __ERC20_init(_NAME, _SYMBOL);
         __Ownable_init();
         __ReentrancyGuard_init();
