@@ -12,6 +12,22 @@
     "test": "npm run rebuild && npx hardhat test",
     "test-verbose": "npx hardhat test --verbose",
     "rebuild": "npm run clean && npm run build",
+
+    "start-localhost-node": "npx hardhat node",
+    "1-CHIM-token-deploy-localhost-node": "npx hardhat run scripts/1-CHIM-token-deploy.ts --network localhost",
+    "2-CHIM-vesting-deploy-localhost-node": "npx hardhat run scripts/2-CHIM-vesting-deploy.ts --network localhost",
+    "3-CHIM-vesting-create-plans-localhost-node": "npx hardhat run scripts/3-CHIM-vesting-create-plans.ts --network localhost",
+    "4-CHIM-token-mint-to-CHIM-vesting-address-localhost-node": "npx hardhat run scripts/4-CHIM-token-mint-to-CHIM-vesting-address.ts --network localhost",
+    "5-CHIM-vesting-lock-tokens-localhost-node": "npx hardhat run scripts/5-CHIM-vesting-lock-tokens.ts --network localhost",
+    "6-CHIM-vesting-set-release-time-localhost-node": "npx hardhat run scripts/6-CHIM-vesting-set-release-time.ts --network localhost",
+
+    "1-CHIM-token-deploy-testnet": "npx hardhat run scripts/1-CHIM-token-deploy.ts --network testnet",
+    "2-CHIM-vesting-deploy-testnet": "npx hardhat run scripts/2-CHIM-vesting-deploy.ts --network testnet",
+    "3-CHIM-vesting-create-plans-testnet": "npx hardhat run scripts/3-CHIM-vesting-create-plans.ts --network testnet",
+    "4-CHIM-token-mint-to-CHIM-vesting-address-testnet": "npx hardhat run scripts/4-CHIM-token-mint-to-CHIM-vesting-address.ts --network testnet",
+    "5-CHIM-vesting-lock-tokens-testnet": "npx hardhat run scripts/5-CHIM-vesting-lock-tokens.ts --network testnet",
+    "6-CHIM-vesting-set-release-time-testnet": "npx hardhat run scripts/6-CHIM-vesting-set-release-time.ts --network testnet",
+
     "lint": "eslint ./ --fix",
     "lint-quick": "pretty-quick --staged --pattern \"**/*.*(ts|tsx)\""
   },

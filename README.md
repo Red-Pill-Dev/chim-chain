@@ -8,20 +8,33 @@
 ```
 ETHERSCAN_API_KEY={YOUR_ETHERSCAN_API_KEY}, required (for test and scripts)
 
-CONTRACT_OWNER_ADDRESS={OWNER_ADDRESS}, not required
-CONTRACT_OWNER_PRIVATE_KEY={OWNER_PRIVATE_KEY}, required (for scripts)
+CONTRACTS_OWNER_ADDRESS={YOUR_OWNER_ADDRESS}, not required
+CONTRACTS_OWNER_PRIVATE_KEY={YOUR_OWNER_PRIVATE_KEY} required (for all scripts)
 ```
 
 4. Create `.env_basic` file
 ```
 GAS_PRICE_IN_GWEI={GAS_PRICE_IN_GWEI}, default: 15
 GAS_LIMIT={GAS_LIMIT}, default: 5000000
+DAY_SEC={DAY_SEC}, default: 86400 = 24 * 60 * 60 (equal 1 day)
+
+CONTRACT_CHIM_TOKEN_ADDRESS={YOUR_CONTRACT_CHIM_TOKEN_ADDRESS}, required for deploy ChimVesting contract and mint tokens to ChimVesting contract
+CONTRACT_CHIM_VESTING_ADDRESS={YOUR_CONTRACT_CHIM_VESTING_ADDRESS}, required for create ChimVesting plans, mint tokens to ChimVesting contract, ChimVesting lock tokens and ChimVesting set release time  
+CONTRACT_CHIM_VESTING_RELEASE_TIME_SEC={YOUR_CONTRACT_CHIM_VESTING_RELEASE_TIME_SEC}, required for ChimVesting set release time
 ```
 
 5. Run `npm run rebuild` in project root directory
 
-6. Run tests: `npm run test` 
-
+6. Run tests:
+    `npm run test` 
+    
+7. scripts to networks (mainnet, testnet):
+    `npx hardhat run scripts/1-CHIM-token-deploy.ts --network mainnet|testnet`
+    `npx hardhat run scripts/2-CHIM-vesting-deploy.ts --network mainnet|testnet`
+    `npx hardhat run scripts/3-CHIM-vesting-create-plans.ts --network mainnet|testnet`
+    `npx hardhat run scripts/4-CHIM-token-mint-to-CHIM-vesting-address.ts --network mainnet|testnet`
+    `npx hardhat run scripts/5-CHIM-vesting-lock-tokens.ts --network mainnet|testnet`
+    `npx hardhat run scripts/6-CHIM-vesting-set-release-time.ts --network mainnet|testnet`
 
 # Краткое описание контрактов:
 ### 1. ChimUpgradeableV1 - контракт токенов совместим с ERC20/BEP20. 
