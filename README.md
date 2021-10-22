@@ -12,7 +12,7 @@ CONTRACTS_OWNER_ADDRESS={YOUR_OWNER_ADDRESS}, not required
 CONTRACTS_OWNER_PRIVATE_KEY={YOUR_OWNER_PRIVATE_KEY} required (for all scripts)
 ```
 
-4. Create `.env_basic` file
+4. Create `.env_base` file
 ```
 GAS_PRICE_IN_GWEI={GAS_PRICE_IN_GWEI}, default: 15
 GAS_LIMIT={GAS_LIMIT}, default: 5000000
