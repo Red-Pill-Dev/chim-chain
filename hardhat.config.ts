@@ -20,12 +20,14 @@ const config: HardhatUserConfig = {
     testnet: {
       url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
       chainId: 97,
-      gasPrice: 20000000000
+      gasPrice: 20000000000,
+      timeout: 120000
     },
     mainnet: {
       url: 'https://bsc-dataseed.binance.org/',
       chainId: 56,
-      gasPrice: 20000000000
+      gasPrice: 20000000000,
+      timeout: 120000
     }
   },
   typechain: {
