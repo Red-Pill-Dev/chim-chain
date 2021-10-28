@@ -1,13 +1,7 @@
 import hre from 'hardhat';
-import { BigNumber, Overrides } from 'ethers';
+import { Overrides } from 'ethers';
 
-import {
-  baseConfig,
-  contractsConfig,
-  secretConfig,
-  supportExternalNetworkChainIds,
-  walletsConfig,
-} from '../utils/config';
+import { baseConfig, contractsConfig, secretConfig, supportExternalNetworkChainIds } from '../utils/config';
 import { getWalletByPrivateKey, logGasUsageEthTransaction, parseBigNumber, parseEthAddress } from '../utils/utilities';
 import { ChimUpgradeableV1__factory, ChimVesting__factory } from '../typechain';
 import { ChimUpgradeableV1 } from '../typechain/ChimUpgradeableV1';
@@ -211,11 +205,18 @@ export async function chimTokenMintToChimVestingAddress(): Promise<void> {
 }
 
 export async function chimVestingLockTokens(): Promise<void> {
-  console.log(`\n\nCHIM vesting lock tokens. Config: ${JSON.stringify(Object.assign({}, baseConfig, { chimVestingAddress: contractsConfig.chimVesting.contractAddress }, walletsConfig))}`);
+  console.log(`\n\nCHIM vesting lock tokens. Config: ${JSON.stringify(Object.assign({}, baseConfig, {
+    chimVestingAddress: contractsConfig.chimVesting.contractAddress,
+    lockConfig: contractsConfig.chimVesting.lockConfig,
+  }))}`);
   if (!secretConfig.contractsOwnerPrivateKey
     || !baseConfig.gasPriceInGwei
     || !baseConfig.gasLimit
     || !contractsConfig.chimVesting.contractAddress
+    || !contractsConfig.chimVesting.lockConfig
+    || !contractsConfig.chimVesting.lockConfig.lockPlanId
+    || !contractsConfig.chimVesting.lockConfig.lockAddresses
+    || !contractsConfig.chimVesting.lockConfig.lockAmounts
   ) {
     throw new Error('Environment variables not specified');
   }
@@ -245,25 +246,35 @@ export async function chimVestingLockTokens(): Promise<void> {
   const vesting = await new ChimVesting__factory(wallet).attach(chimVestingAddress);
   console.log(`Successfully connected to ChimVesting: ${chimVestingAddress}`);
 
-  console.log(`\nLock tokens for all plans`);
+  console.log(`\nCheck lockPlanId`);
+  const foundLock = contractsConfig.chimVesting.plans.find(item => item.id === contractsConfig.chimVesting.lockConfig.lockPlanId);
+  console.log(`LockPlanId: ${foundLock ? 'found' : 'not found'}`);
+  if (!foundLock) {
+    throw new Error('LockPlanId not found');
+  }
+
+  console.log(`\nGet and check lockAddresses and lockAmounts`);
+  const lockAddresses = contractsConfig.chimVesting.lockConfig.lockAddresses.split(',').map(item => item.trim());
+  const lockAmounts = contractsConfig.chimVesting.lockConfig.lockAmounts.split(',').map(item => parseBigNumber(item.trim(), baseConfig.ethDecimals));
+  console.log(`LockAddresses: ${lockAddresses.join(', ')}`);
+  console.log(`LockAmounts: ${lockAmounts.join(', ')}`);
+  if (lockAddresses.length === 0
+    || lockAmounts.length === 0
+    || lockAddresses.length !== lockAmounts.length) {
+    throw new Error('Invalid lockAddresses and lockAmounts array length');
+  }
+
+  console.log(`\nLock tokens`);
   const listTx = [];
-  const receiversAddresses = walletsConfig.filter(item => item !== undefined).map(item => parseEthAddress(item as string));
-  console.log(`receiversAddresses: ${receiversAddresses.join(', ')}`);
-  for (let i = 0; i < contractsConfig.chimVesting.plans.length; i++) {
-    const plan = contractsConfig.chimVesting.plans[i];
-    const planId = BigNumber.from(plan.id);
-    let totalLock = parseBigNumber(plan.maxPlanTotal.toString(), baseConfig.ethDecimals).div(10);
-    for (let j = 0; j < receiversAddresses.length; j++) {
-      const receiverAddress = receiversAddresses[j];
-      const receiversAmount = j === receiversAddresses.length - 1 ? totalLock : totalLock.mul(67).div(100);
-      totalLock = totalLock.sub(receiversAmount);
-      listTx.push(vesting.connect(wallet).lockTokens(
-        receiverAddress,
-        receiversAmount,
-        planId,
-        Object.assign({}, overrides, { nonce: walletNonce + i * receiversAddresses.length + j }),
-      ));
-    }
+  for (let i = 0; i < lockAddresses.length; i++) {
+    const lockAddress = lockAddresses[i];
+    const lockAmount = lockAmounts[i];
+    listTx.push(vesting.connect(wallet).lockTokens(
+      lockAddress,
+      lockAmount,
+      contractsConfig.chimVesting.lockConfig.lockPlanId,
+      Object.assign({}, overrides, { nonce: walletNonce + i }),
+    ));
   }
   const txList = await Promise.all(listTx);
   console.log(`Tx ids: ${txList.map(item => item.hash).join(', ')}`);

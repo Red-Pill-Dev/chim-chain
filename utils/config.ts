@@ -17,12 +17,6 @@ export const baseConfig = {
   daySec: env.get('DAY_SEC').default(86400).asInt(),
 };
 
-export const walletsConfig = [
-  env.get('WALLET_1_ADDRESS').required(false).asString(),
-  env.get('WALLET_2_ADDRESS').required(false).asString(),
-  env.get('WALLET_3_ADDRESS').required(false).asString(),
-];
-
 export const contractsConfig = {
   chimToken: {
     totalSupply: '62000000',
@@ -141,7 +135,12 @@ export const contractsConfig = {
       },
     ],
     contractAddress: env.get('CONTRACT_CHIM_VESTING_ADDRESS').required(false).asString(),
-    releaseTime: env.get('CONTRACT_CHIM_VESTING_RELEASE_TIME_SEC').required(false).asInt()
+    releaseTime: env.get('CONTRACT_CHIM_VESTING_RELEASE_TIME_SEC').required(false).asInt(),
+    lockConfig: {
+      lockPlanId: env.get('LOCK_PLAN_ID').required(false).asInt(),
+      lockAddresses: env.get('LOCK_ADDRESSES').required(false).asString(),
+      lockAmounts: env.get('LOCK_AMOUNTS').required(false).asString(),
+    },
   },
 };
 
