@@ -12,7 +12,7 @@ CONTRACTS_OWNER_ADDRESS={YOUR_OWNER_ADDRESS}, not required
 CONTRACTS_OWNER_PRIVATE_KEY={YOUR_OWNER_PRIVATE_KEY} required (for all scripts)
 ```
 
-4. Create `.env_basic` file
+4. Create `.env_base` file
 ```
 GAS_PRICE_IN_GWEI={GAS_PRICE_IN_GWEI}, default: 15
 GAS_LIMIT={GAS_LIMIT}, default: 5000000
@@ -36,9 +36,9 @@ CONTRACT_CHIM_VESTING_RELEASE_TIME_SEC={YOUR_CONTRACT_CHIM_VESTING_RELEASE_TIME_
     `npx hardhat run scripts/5-CHIM-vesting-lock-tokens.ts --network mainnet|testnet`
     `npx hardhat run scripts/6-CHIM-vesting-set-release-time.ts --network mainnet|testnet`
 
-# Краткое описание контрактов:
-### 1. ChimUpgradeableV1 - контракт токенов совместим с ERC20/BEP20. 
-За основу взят @openzeppelin контракт ERC20Upgradeable с возможностью ставить контракт на паузу и добавлять/удалять адреса в/из блеклиста. Контракт разворачивается через proxy с помощью библиотеки @openzeppelin/hardhat-upgrades.
+# Contract descriptions:
+### 1. The ChimUpgradeableV1 token contract is compatible with the ERC20/BEP20 standards. 
+The @openzeppelin ERC20Upgradeable contract was taken as the basis with the added ability to pause the contract and add or remove addresses to and from the blacklist. The contract is deployed through a proxy using the @openzeppelin/hardhat-upgrades library.
 
-###2. ChimVesting - контракт для начисления адресам некой суммы токенов по определенному плану с задержкой получения.
-Адрес может забрать свои токены (часть токенов) только с истечением времени, которое зависит от конкретного плана и даты старта вестинга. Админ (овнер) может установить дату старта вестинга, создать/изменить планы вестинга, также начислить адресу по нужному плану определенную сумму (по одному плану может быть несколько начисление одному адресу). Расчет сумм для вывода токенов пользователями начинается с даты старта вестинга (устанавливается 1 раз). Пока старта не было - никто ничего вывести не может. Пользователь может по каждому плану мониторить и выводить сумму, которая ему уже доступна для вывода.
+### 2. ChimVesting is a contract used for transferring a certain amount of tokens to addresses based on a predetermined schedule with receipt delays.
+The address can receive the tokens, or part of the amount of tokens, only upon the expiration of a certain period, which depends on the specific plan and date of vesting start. The admin, or owner, can set the date for vesting start, create and change vesting plans, and transfer a certain amount of tokens to the address based on the desired plan, since a single plan can entail several transfers to a single address. The calculation of the amounts of tokens users can withdraw starts from the date of vesting, which can be set only once. There are no withdrawals before vesting starts. The user can monitor and withdraw the amount that is available for withdrawal as per each plan.
